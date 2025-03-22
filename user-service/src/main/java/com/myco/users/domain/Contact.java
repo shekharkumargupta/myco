@@ -1,0 +1,28 @@
+package com.myco.users.domain;
+
+
+import com.myco.users.enums.ContactType;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Data
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+public class Contact {
+
+    @Id
+    @GeneratedValue
+    private long id;
+    private ContactType contactType;
+    private String contactName;
+    private String contactNumber;
+    @ManyToOne
+    private AppUser appUser;
+    @CreatedDate
+    private long createdAt;
+    @LastModifiedDate
+    private long modifiedAt;
+}

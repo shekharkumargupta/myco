@@ -1,0 +1,17 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+
+springdoc:
+  api-docs:
+    path: /swagger
+  swagger-ui:
+    path: /swagger.html

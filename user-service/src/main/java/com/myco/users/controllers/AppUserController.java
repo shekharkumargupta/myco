@@ -1,14 +1,29 @@
 package com.myco.users.controllers;
 
+import com.myco.users.domain.AppUser;
+import com.myco.users.services.AppUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("v1/users")
 public class AppUserController {
 
+    private final AppUserService appUserService;
+
+    public AppUserController(AppUserService appUserService){
+        this.appUserService = appUserService;
+    }
+
     @GetMapping
     public String ping(){
         return HttpStatus.OK.name();
+    }
+
+    @PostMapping
+    public AppUser create(@RequestBody AppUser appUser){
+        return appUserService.save(appUser);
     }
 }

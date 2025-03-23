@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public interface ContactService {
 
     public Contact save(Contact contact) throws ApplicationException;
@@ -14,4 +13,6 @@ public interface ContactService {
 
     public Contact find(Long id);
     public List<Contact> findAll();
+
+    public List<Contact> findAllByAppUser(String mobileNumber);
 }

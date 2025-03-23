@@ -16,6 +16,7 @@ public class AppUser {
 
     @Id
     @GeneratedValue
+    private long id;
     private String mobileNumber;
     @CreatedDate
     private long createdAt;

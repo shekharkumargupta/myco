@@ -3,14 +3,16 @@ package com.myco.users.services;
 import com.myco.users.domain.AppUser;
 import com.myco.users.exceptions.ApplicationException;
 import com.myco.users.repositories.AppUserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class AppServiceImpl implements AppUserService{
+@Service
+public class AppUserServiceImpl implements AppUserService{
 
     private final AppUserRepository appUserRepository;
 
-    public AppServiceImpl(AppUserRepository appUserRepository) {
+    public AppUserServiceImpl(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
     }
 

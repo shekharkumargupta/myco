@@ -1,38 +1,38 @@
 package com.myco.users.controllers;
 
-import com.myco.users.services.QRCodeService;
+import com.myco.users.domain.AppUser;
+import com.myco.users.services.AppUserService;
+import com.myco.users.services.QRCodeGeneratorServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Base64;
 
 @RestController
 @RequestMapping("v1/qr")
 public class QRController {
 
-    private static final String QR_CODE_IMAGE_PATH = "d:/QRCode.png";
-    private final QRCodeService qrCodeService;
+    private final QRCodeGeneratorServiceImpl qrCodeServiceImpl;
+    private final AppUserService appUserService;
 
-    public QRController(QRCodeService qrCodeService) {
-        this.qrCodeService = qrCodeService;
+    public QRController(QRCodeGeneratorServiceImpl qrCodeServiceImpl, AppUserService appUserService) {
+        this.qrCodeServiceImpl = qrCodeServiceImpl;
+        this.appUserService = appUserService;
     }
 
-    @GetMapping("/{mobileNumber}")
-    public String getQRCode(@PathVariable String mobileNumber){
-        return mobileNumber;
+    @GetMapping
+    public String ping(){
+        return HttpStatus.OK.name();
     }
 
-    @PostMapping(value = "/{mobileNumber}", produces = MediaType.IMAGE_PNG_VALUE)
-    public byte[] createQRCode(@PathVariable String mobileNumber){
+    @PostMapping(produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] createQRCode(@RequestBody String mobileNumber){
+        AppUser appUser = appUserService.findByMobileNumber(mobileNumber);
         byte[] image = new byte[0];
         try {
-            image = qrCodeService.getQRCodeImage(mobileNumber,250,250);
-            //qrCodeService.generateQRCodeImage(mobileNumber,250,250,QR_CODE_IMAGE_PATH);
+            image = qrCodeServiceImpl.create(appUser.getId().toString(),250,250);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //String qrcode = Base64.getEncoder().encodeToString(image);
-        //return qrcode;
         return image;
     }
 }

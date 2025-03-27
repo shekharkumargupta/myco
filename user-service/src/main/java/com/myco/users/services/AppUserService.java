@@ -12,7 +12,7 @@ public interface AppUserService {
 
     public AppUser save(AppUser appUser) throws ApplicationException;
     public AppUser remove(long id) throws ApplicationException;
-
     public AppUser find(Long id);
+    public AppUser findByMobileNumber(String mobileNumber);
     public List<AppUser> findAll();
 }

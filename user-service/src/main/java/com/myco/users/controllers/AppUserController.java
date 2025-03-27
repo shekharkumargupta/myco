@@ -22,6 +22,12 @@ public class AppUserController {
         return HttpStatus.OK.name();
     }
 
+    @GetMapping("/{mobileNumber}")
+    public AppUser findByMobileNumber(String mobileNumber){
+        AppUser appUser = appUserService.findByMobileNumber(mobileNumber);
+        return appUser;
+    }
+
     @PostMapping
     public AppUser create(@RequestBody AppUser appUser){
         return appUserService.save(appUser);

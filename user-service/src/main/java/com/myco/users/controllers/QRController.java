@@ -1,12 +1,13 @@
 package com.myco.users.controllers;
 
-import com.myco.users.domain.AppUser;
 import com.myco.users.services.AppUserService;
 import com.myco.users.services.QRCodeGeneratorServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("v1/qr")
 public class QRController {
@@ -26,10 +27,10 @@ public class QRController {
 
     @PostMapping(produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] createQRCode(@RequestBody String mobileNumber){
-        AppUser appUser = appUserService.findByMobileNumber(mobileNumber);
+        String userUrl = appUserService.createUserUrl(mobileNumber);
         byte[] image = new byte[0];
         try {
-            image = qrCodeServiceImpl.create(appUser.getId().toString(),250,250);
+            image = qrCodeServiceImpl.create(userUrl,250,250);
         } catch (Exception e) {
             e.printStackTrace();
         }

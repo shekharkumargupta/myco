@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("v1/users")
 public class AppUserController {
 
+
+
     private final AppUserService appUserService;
 
     public AppUserController(AppUserService appUserService){
@@ -29,7 +31,9 @@ public class AppUserController {
     }
 
     @PostMapping
-    public AppUser create(@RequestBody AppUser appUser){
+    public AppUser create(@RequestBody String mobileNumber){
+        AppUser appUser = new AppUser();
+        appUser.setMobileNumber(mobileNumber);
         return appUserService.save(appUser);
     }
 }

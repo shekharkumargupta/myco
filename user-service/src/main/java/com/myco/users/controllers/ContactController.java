@@ -4,7 +4,6 @@ import com.myco.users.domain.Contact;
 import com.myco.users.services.AppUserService;
 import com.myco.users.services.ContactService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +25,9 @@ public class ContactController {
         return HttpStatus.OK.name();
     }
 
-    //We must take the mobile number from authentication token not from API URL
-    @GetMapping("/{mobileNumber}")
-    public List<Contact> getContacts(@PathVariable String mobileNumber){
-        return contactService.findAllByAppUser(mobileNumber);
+    @GetMapping("/{userId}")
+    public List<Contact> getContacts(@PathVariable String userId){
+        return contactService.findAllByUserId(userId);
     }
 
     @GetMapping("/contactId/{contactId}")

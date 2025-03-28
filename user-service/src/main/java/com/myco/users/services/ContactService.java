@@ -15,4 +15,5 @@ public interface ContactService {
     public List<Contact> findAll();
 
     public List<Contact> findAllByAppUser(String mobileNumber);
+    public List<Contact> findAllByUserId(String uuid);
 }

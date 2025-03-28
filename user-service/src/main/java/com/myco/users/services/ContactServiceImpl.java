@@ -8,6 +8,7 @@ import com.myco.users.repositories.ContactRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ContactServiceImpl implements ContactService{
@@ -43,6 +44,14 @@ public class ContactServiceImpl implements ContactService{
     @Override
     public List<Contact> findAllByAppUser(String mobileNumber){
         AppUser appuser = appUserRepository.findByMobileNumber(mobileNumber);
+        List<Contact> contactList = contactRepository.findByAppUser(appuser);
+        return contactList;
+    }
+
+    @Override
+    public List<Contact> findAllByUserId(String uuid) {
+        AppUser appuser = appUserRepository
+                .findById(UUID.fromString(uuid)).orElseThrow();
         List<Contact> contactList = contactRepository.findByAppUser(appuser);
         return contactList;
     }

@@ -1,16 +1,20 @@
 package com.myco.users.services;
 
 import com.myco.users.domain.AppUser;
-import com.myco.users.domain.QRCode;
 import com.myco.users.exceptions.ApplicationException;
 import com.myco.users.repositories.AppUserRepository;
 import com.myco.users.repositories.QRCodeRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AppUserServiceImpl implements AppUserService{
+
+    @Value("${qr.searchUrl}")
+    private String searchUrl;
 
     private final AppUserRepository appUserRepository;
     private final QRCodeRepository qrCodeRepository;
@@ -45,8 +49,14 @@ public class AppUserServiceImpl implements AppUserService{
     }
 
     @Override
-    public AppUser find(Long id) {
-        return appUserRepository.findById(id).orElseThrow();
+    public AppUser find(String uuid) {
+        UUID uuid2 = UUID.fromString(uuid);
+        return appUserRepository.findById(uuid2).orElseThrow();
+    }
+
+    @Override
+    public AppUser find(UUID uuid) {
+        return appUserRepository.findById(uuid).orElseThrow();
     }
 
     @Override
@@ -57,5 +67,12 @@ public class AppUserServiceImpl implements AppUserService{
     @Override
     public List<AppUser> findAll() {
         return appUserRepository.findAll();
+    }
+
+    @Override
+    public String createUserUrl(String mobileNumber) {
+        String userId = findByMobileNumber(mobileNumber).getId().toString();
+        String qrUrl = searchUrl + "/" + userId;
+        return qrUrl;
     }
 }

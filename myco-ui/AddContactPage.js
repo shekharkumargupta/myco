@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css"; // icon support
 
 const AddContactPage = () => {
   const [contactName, setContactName] = useState("");
@@ -16,7 +17,7 @@ const AddContactPage = () => {
       name: contactName,
       contactNumber,
       type: contactType,
-      userId: "your-user-id" // Replace this with real userId logic
+      userId: "your-user-id" // replace with actual user logic
     };
 
     try {
@@ -36,8 +37,22 @@ const AddContactPage = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "500px" }}>
-      <h2 className="mb-4 text-center">Add New Contact</h2>
+    <div className="bg-light min-vh-100 d-flex flex-column">
+      {/* Header */}
+      <header className="bg-primary text-white py-3 shadow-sm sticky-top">
+        <div className="container d-flex justify-content-between align-items-center">
+          <h4 className="mb-0">My Contacts</h4>
+          <button
+            className="btn btn-outline-light rounded-circle p-2 d-flex align-items-center justify-content-center"
+            style={{ width: "40px", height: "40px" }}
+            aria-label="QR Code"
+          >
+            <i className="bi bi-qr-code-scan"></i>
+          </button>
+        </div>
+      </header>
+
+      {/* Form */}
       <form onSubmit={handleSubmit} className="border p-4 rounded shadow-sm bg-light">
         <div className="mb-3">
           <label className="form-label">Contact Name</label>

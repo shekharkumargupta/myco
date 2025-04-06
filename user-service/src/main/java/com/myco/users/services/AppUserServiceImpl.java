@@ -70,8 +70,7 @@ public class AppUserServiceImpl implements AppUserService{
     }
 
     @Override
-    public String createUserUrl(String mobileNumber) {
-        String userId = findByMobileNumber(mobileNumber).getId().toString();
+    public String createUserUrl(String userId) {
         String qrUrl = searchUrl + "/" + userId;
         return qrUrl;
     }

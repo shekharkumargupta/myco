@@ -36,8 +36,23 @@ const AddContactPage = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "500px" }}>
-      <h2 className="mb-4 text-center">Add New Contact</h2>
+    <div className="bg-light min-vh-100 d-flex flex-column">
+	
+	  <header className="bg-primary text-white py-3 shadow-sm sticky-top">
+        <div className="container d-flex justify-content-between align-items-center">
+          <h4 className="mb-0">Add Contact</h4>
+          <button
+            className="btn btn-outline-light rounded-circle p-2 d-flex align-items-center justify-content-center"
+            onClick={() => navigate("/home")}
+			style={{ width: "40px", height: "40px" }}
+            aria-label="Home"
+          >
+			  <i className="bi bi-house-door-fill fs-4"></i>
+		  </button>
+        </div>
+      </header>
+
+
       <form onSubmit={handleSubmit} className="border p-4 rounded shadow-sm bg-light">
         <div className="mb-3">
           <label className="form-label">Contact Name</label>

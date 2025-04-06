@@ -1,5 +1,6 @@
 package com.myco.users.controllers;
 
+import com.myco.users.domain.AppUser;
 import com.myco.users.services.AppUserService;
 import com.myco.users.services.QRCodeGeneratorServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,18 @@ public class QRController {
     @GetMapping
     public String ping(){
         return HttpStatus.OK.name();
+    }
+
+    @GetMapping(value = "/{userId}", produces = MediaType.IMAGE_PNG_VALUE)
+    public byte[] getQRCode(@PathVariable String userId){
+        String userUrl = appUserService.createUserUrl(userId);
+        byte[] image = new byte[0];
+        try {
+            image = qrCodeServiceImpl.create(userUrl,250,250);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
     @PostMapping(produces = MediaType.IMAGE_PNG_VALUE)

@@ -7,7 +7,7 @@ import SignUpPage from './SignUpPage';
 import OtpPage from './OtpPage';
 import HomePage from './HomePage';
 import AddContactPage from "./AddContactPage";
-
+import QrCodePage from "./QrCodePage";
 
 const App = () => {
   return (
@@ -18,6 +18,7 @@ const App = () => {
 		  <Route path="/otp" element={<OtpPage />} />
 		  <Route path="/home" element={<HomePage />} />
 		  <Route path="/add-contact" element={<AddContactPage />} />
+		  <Route path="/qr" element={<QrCodePage />} />
         </Routes>
       </div>
     </Router>

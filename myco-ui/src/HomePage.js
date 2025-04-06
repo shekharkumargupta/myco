@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [emergencyContacts, setEmergencyContacts] = useState([]);
   const [helpContacts, setHelpContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
 
   const userId = "3172b0e7-a538-4085-8cf8-fe7fae1b07ce"; // replace with real user ID (from login context, token, etc.)
@@ -82,7 +84,8 @@ const HomePage = () => {
           <h4 className="mb-0">My Contacts</h4>
           <button
             className="btn btn-outline-light rounded-circle p-2 d-flex align-items-center justify-content-center"
-            style={{ width: "40px", height: "40px" }}
+            onClick={() => navigate("/qr")}
+			style={{ width: "40px", height: "40px" }}
             aria-label="QR Code"
           >
             <i className="bi bi-qr-code-scan"></i>
@@ -102,6 +105,7 @@ const HomePage = () => {
 		  }}
 		  data-bs-toggle="modal"
 		  data-bs-target="#addContactModal"
+		  onClick={() => navigate("/add-contact")}
 		  title="Add Contact"
 		>
 		  <i className="bi bi-plus-lg fs-4"></i>

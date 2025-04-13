@@ -18,7 +18,7 @@ public class CallServiceImpl implements CallService{
     public static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
     public static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
     public String toPhoneNumber = "+91xxxxxxxxx";
-    public String fromPhoneNumber = "+17177947344";
+    public String fromPhoneNumber = "+xxxxx";
 
 
     @Override
@@ -32,8 +32,8 @@ public class CallServiceImpl implements CallService{
         String twimlUrl = "https://twimlets.com/message?Message%5B0%5D=" + encodedMessage;
 
         Call call = Call.creator(
-                new PhoneNumber("+918264481868"), // To number
-                new PhoneNumber("+17177947344"), // From your Twilio number
+                new PhoneNumber(toPhoneNumber), // To number
+                new PhoneNumber(fromPhoneNumber), // From your Twilio number
                 URI.create(twimlUrl)
         ).create();
 

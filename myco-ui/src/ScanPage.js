@@ -260,7 +260,7 @@ const resizeBase64Image = (base64, maxWidth = 800, maxHeight = 800) => {
 
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
         <div className="card shadow p-4" style={{ maxWidth: '400px', width: '100%' }}>
-          <h2 className="text-success text-center mb-4">User ID from Query: {userId}</h2>
+          <h8 className="text-success text-center mb-4">User ID from Query: {userId}</h8>
           {capturedImage && (
             <div className="mb-3 text-center">
               <img src={capturedImage} alt="Captured" className="img-fluid rounded" />

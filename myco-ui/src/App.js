@@ -8,6 +8,7 @@ import OtpPage from './OtpPage';
 import HomePage from './HomePage';
 import AddContactPage from "./AddContactPage";
 import QrCodePage from "./QrCodePage";
+import ScanPage from "./ScanPage";
 
 const App = () => {
   return (
@@ -19,7 +20,8 @@ const App = () => {
 		  <Route path="/home" element={<HomePage />} />
 		  <Route path="/add-contact" element={<AddContactPage />} />
 		  <Route path="/qr" element={<QrCodePage />} />
-        </Routes>
+		  <Route path="/scan" element={<ScanPage />} />
+	    </Routes>
       </div>
     </Router>
   );

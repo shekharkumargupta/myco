@@ -4,6 +4,7 @@ import com.myco.users.domain.AppUser;
 import com.myco.users.domain.OTP;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -12,7 +13,21 @@ public class OTPController {
 
 
     @PostMapping
-    public String create(@RequestBody OTP otp){
-        return HttpStatus.OK.name();
+    public ResponseEntity<String> verify(@RequestBody OTP otp){
+		if("1111".equalsIgnoreCase(otp.getOtp())){
+			return ResponseEntity.ok().build();
+		}else{
+			return  ResponseEntity.notFound().build();
+		}
+    }
+	
+	@PostMapping("/send")
+    public ResponseEntity<String> send(@RequestBody OTP otp){
+		return ResponseEntity.ok("1111");
+    }
+	
+		@PostMapping("/makeCall")
+    public ResponseEntity<String> makeCall(@RequestBody OTP otp){
+		return ResponseEntity.ok("1111");
     }
 }

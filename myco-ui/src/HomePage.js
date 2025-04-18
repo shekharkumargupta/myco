@@ -81,7 +81,7 @@ const HomePage = () => {
       {/* Header */}
       <header className="bg-primary text-white py-3 shadow-sm sticky-top">
         <div className="container d-flex justify-content-between align-items-center">
-          <h4 className="mb-0">My Contacts</h4>
+          <h1 className="mb-0">myco</h1>
           <button
             className="btn btn-outline-light rounded-circle p-2 d-flex align-items-center justify-content-center"
             onClick={() => navigate("/qr")}

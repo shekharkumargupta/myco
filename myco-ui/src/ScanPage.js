@@ -133,16 +133,21 @@ const makeCallToOwner = async () => {
       body: JSON.stringify({
         userId,
         mobileNumber,
+        capturedImage, // still sending base64 if needed
       }),
     });
 
     if (response.ok) {
-      setShowSuccessDialog(true);
-
-      // Redirect to /home after 3 seconds
-      setTimeout(() => {
-        window.location.href = '/home';
-      }, 3000);
+      // ✅ Step 2: Upload the image file
+      const uploadSuccess = await uploadCapturedImage();
+      
+      if (uploadSuccess) {
+        // ✅ Now show success dialog and redirect
+        setShowSuccessDialog(true);
+        setTimeout(() => {
+          window.location.href = '/home';
+        }, 3000);
+      }
     } else {
       const data = await response.json();
       alert(`⚠️ Call failed: ${data.message || 'Unknown error'}`);
@@ -152,6 +157,86 @@ const makeCallToOwner = async () => {
     alert('❌ Failed to initiate call. Please try again.');
   }
 };
+
+
+const uploadCapturedImage = async () => {
+  try {
+    if (!capturedImage) {
+      console.warn('No image to upload.');
+      return false;
+    }
+
+    // ✅ Resize before uploading
+    const resizedBase64 = await resizeBase64Image(capturedImage);
+    const imageBlob = base64ToBlob(resizedBase64);
+
+    const formData = new FormData();
+    formData.append('file', imageBlob, 'captured-photo.jpg');
+
+    const response = await fetch('http://localhost:8081/v1/files/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      console.log('✅ Image uploaded successfully');
+      return true;
+    } else {
+      const data = await response.json();
+      alert(`⚠️ Image upload failed: ${data.message || 'Unknown error'}`);
+      return false;
+    }
+  } catch (err) {
+    console.error('Upload error:', err);
+    alert('🚨 Error uploading image.');
+    return false;
+  }
+};
+
+
+
+const base64ToBlob = (base64) => {
+  const parts = base64.split(';base64,');
+  const contentType = parts[0].split(':')[1];
+  const byteCharacters = atob(parts[1]);
+  const byteArrays = [];
+
+  for (let i = 0; i < byteCharacters.length; i += 512) {
+    const slice = byteCharacters.slice(i, i + 512);
+    const byteNumbers = new Array(slice.length).fill().map((_, j) => slice.charCodeAt(j));
+    byteArrays.push(new Uint8Array(byteNumbers));
+  }
+
+  return new Blob(byteArrays, { type: contentType });
+};
+
+const resizeBase64Image = (base64, maxWidth = 800, maxHeight = 800) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+
+      // Scale proportionally
+      if (width > maxWidth || height > maxHeight) {
+        const scale = Math.min(maxWidth / width, maxHeight / height);
+        width = width * scale;
+        height = height * scale;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      const resizedBase64 = canvas.toDataURL('image/jpeg', 0.7); // 0.7 compression
+      resolve(resizedBase64);
+    };
+    img.src = base64;
+  });
+};
+
 
 
 

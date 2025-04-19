@@ -6,6 +6,9 @@ import com.myco.users.services.CallService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("v1/call")
@@ -18,8 +21,9 @@ public class CallController {
     }
 
     @PostMapping
-    public ResponseEntity<String> makeCall(@RequestBody CallRequest callRequest){
-        CallResponse callResponse = callService.call(callRequest);
-        return ResponseEntity.ok(callResponse.getRequestId().toString());
+    public ResponseEntity<List<CallResponse>> makeCall(@RequestBody CallRequest callRequest){
+        //List<CallResponse> callResponses = callService.call(callRequest);
+        List<CallResponse> callResponses = new ArrayList<>();
+        return ResponseEntity.ok(callResponses);
     }
 }

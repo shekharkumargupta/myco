@@ -3,7 +3,9 @@ package com.myco.users.services;
 import com.myco.users.domain.CallRequest;
 import com.myco.users.domain.CallResponse;
 
+import java.util.List;
+
 public interface CallService {
 
-    public CallResponse call(CallRequest callRequest);
+    public List<CallResponse> call(CallRequest callRequest);
 }

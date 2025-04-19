@@ -8,10 +8,8 @@ import java.util.UUID;
 @Data
 public class CallResponse {
 
-    private UUID requestId;
+    private String requestId;
     private int callDurationSeconds;
-    private String response;
-    private String latitude;
-    private String longitude;
+    private String info;
     private LocalDateTime createdAt;
 }

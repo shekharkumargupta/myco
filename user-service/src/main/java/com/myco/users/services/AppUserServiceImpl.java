@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,18 +29,11 @@ public class AppUserServiceImpl implements AppUserService{
 
     @Override
     public AppUser save(AppUser appUser) throws ApplicationException {
-        AppUser savedAppUser = appUserRepository.save(appUser);
-
-        //No need to save QR Code for now
-        //Always generate QR Code from User UUID.
-
-//        byte[] qrCodeImage = qrCodeGeneratorService
-//                .create(appUser.getId().toString(), 250, 250);
-
-//        QRCode qrCode = new QRCode();
-//        qrCode.setQrcode(qrCodeImage);
-//        qrCode.setUser(savedAppUser);
-//        qrCodeRepository.save(qrCode);
+        AppUser savedAppUser =
+                appUserRepository.findByMobileNumber(appUser.getMobileNumber());
+        if(Optional.ofNullable(savedAppUser).isEmpty()) {
+            savedAppUser = appUserRepository.save(appUser);
+        }
         return savedAppUser;
     }
 

@@ -2,43 +2,54 @@ package com.myco.users.services;
 
 import com.myco.users.domain.CallRequest;
 import com.myco.users.domain.CallResponse;
+import com.myco.users.domain.Contact;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Call;
 import com.twilio.type.PhoneNumber;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
+@Slf4j
+@Service
 public class CallServiceImpl implements CallService{
 
     public static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
     public static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
     public String fromPhoneNumber = "+17177947344";
 
+    private final ContactService contactService;
 
-    @Override
-    public CallResponse call(CallRequest callRequest) {
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-
-        String message = "नमस्ते समृद्धि! यह एक परीक्षण कॉल है। धन्यवाद!";
-        String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
-
-        // Use Twimlet to say your message
-        String twimlUrl = "https://twimlets.com/message?Message%5B0%5D=" + encodedMessage;
-
-        Call call = Call.creator(
-                new PhoneNumber(callRequest.getTo()), // To number
-                new PhoneNumber(fromPhoneNumber), // From your Twilio number
-                URI.create(twimlUrl)
-        ).create();
-
-        System.out.println("Call SID: " + call.getSid());
-        return new CallResponse();
+    public CallServiceImpl(ContactService contactService) {
+        this.contactService = contactService;
     }
 
-//    public static void main(String args[]){
-//        CallService callService = new CallServiceImpl();
-//        callService.call(null);
-//    }
+
+    @Override
+    public List<CallResponse> call(CallRequest callRequest) {
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        List<Contact> contacts = contactService.findAllByUserId(callRequest.getToUserId());
+        List<CallResponse> callResponses = new ArrayList<>();
+        for (Contact contact : contacts) {
+            String message = "नमस्ते " + contact.getContactName() +"! यह एक परीक्षण कॉल है। धन्यवाद!";
+            String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
+            String twimlUrl = "https://twimlets.com/message?Message%5B0%5D=" + encodedMessage;
+            Call call = Call.creator(
+                    new PhoneNumber(contact.getContactNumber()), // To number
+                    new PhoneNumber(fromPhoneNumber), // From your Twilio number
+                    URI.create(twimlUrl)
+            ).create();
+            CallResponse callResponse = new CallResponse();
+            callResponse.setRequestId(call.getSid());
+            callResponse.setInfo(contact.getRelation());
+            callResponses.add(callResponse);
+            log.info("Call SID: " + call.getSid());
+        }
+        return callResponses;
+    }
 }

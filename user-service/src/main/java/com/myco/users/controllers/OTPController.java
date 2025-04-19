@@ -1,6 +1,9 @@
 package com.myco.users.controllers;
 
+import com.myco.users.domain.AppUser;
 import com.myco.users.domain.OTP;
+import com.myco.users.services.AppUserService;
+import com.myco.users.services.OTPService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,18 +12,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("v1/otp")
 public class OTPController {
 
+	private final OTPService otpService;
+	private final AppUserService appUserService;
 
-    @PostMapping
-    public ResponseEntity<String> verify(@RequestBody OTP otp){
-		if("1111".equalsIgnoreCase(otp.getOtp())){
-			return ResponseEntity.ok().build();
-		}else{
-			return  ResponseEntity.notFound().build();
-		}
+	public OTPController(OTPService otpService, AppUserService appUserService) {
+		this.otpService = otpService;
+		this.appUserService = appUserService;
+	}
+
+	@PostMapping("/verify")
+    public ResponseEntity<AppUser> verify(@RequestBody OTP otp){
+		AppUser appUser = otpService.verify(otp);
+		return ResponseEntity.ok().body(appUser);
     }
 	
 	@PostMapping("/send")
-    public ResponseEntity<String> send(@RequestBody OTP otp){
-		return ResponseEntity.ok("1111");
+    public ResponseEntity<String> send(@RequestBody String mobileNumber){
+		String generated = otpService.generate(mobileNumber);
+		return ResponseEntity.ok(generated);
     }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import API_BASE_URL from "./config";
 
 const QrCodePage = () => {
   const [qrImage, setQrImage] = useState(null);
@@ -12,7 +13,7 @@ const QrCodePage = () => {
   useEffect(() => {
     const fetchQrCode = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/v1/qr/${userId}`);
+        const response = await fetch(`${API_BASE_URL}/v1/qr/${userId}`);
         if (!response.ok) throw new Error("Failed to fetch QR code");
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);

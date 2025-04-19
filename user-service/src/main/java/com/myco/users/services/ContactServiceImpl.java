@@ -28,7 +28,9 @@ public class ContactServiceImpl implements ContactService{
 
     @Override
     public Contact remove(long id) throws ApplicationException {
-        throw new UnsupportedOperationException("Not implemented Yet");
+        Contact contact = contactRepository.findById(id).orElse(new Contact());
+        contactRepository.deleteById(id);
+        return contact;
     }
 
     @Override

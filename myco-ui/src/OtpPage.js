@@ -6,7 +6,7 @@ const OtpPage = () => {
   const history = useNavigate();
   const navigate = useNavigate();
   
-  const { mobileNumber } = location.state || {}; // Get mobile number passed from SignUpPage
+  const { userId, mobileNumber } = location.state || {}; // Get mobile number passed from SignUpPage
 
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [error, setError] = useState("");
@@ -61,7 +61,7 @@ const OtpPage = () => {
       }
 
       // Navigate to Home on success
-      navigate("/home");
+      navigate("/home", { state: { userId, mobileNumber } });
     } catch (err) {
       setError(err.message);
     } finally {

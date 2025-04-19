@@ -41,4 +41,9 @@ public class ContactController {
     public Contact create(@RequestBody Contact contact){
         return contactService.save(contact);
     }
+
+    @DeleteMapping("/{contactId}")
+    public Contact delete(@PathVariable Long contactId){
+        return contactService.remove(contactId);
+    }
 }

@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import API_BASE_URL from "./config";
 
 const HomePage = () => {
   const [emergencyContacts, setEmergencyContacts] = useState([]);
-  const [helpContacts, setHelpContacts] = useState([]);
+  const [familyContacts, setFamilyContacts] = useState([]);
+  const [selfContacts, setSelfContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const location = useLocation();
   const navigate = useNavigate();
+  const { userId, mobileNumber } = location.state || {};
 
 
-  const userId = "3172b0e7-a538-4085-8cf8-fe7fae1b07ce"; // replace with real user ID (from login context, token, etc.)
+  //const userId = "3172b0e7-a538-4085-8cf8-fe7fae1b07ce"; // replace with real user ID (from login context, token, etc.)
 
 	useEffect(() => {
 		fetchContacts();
@@ -17,16 +21,18 @@ const HomePage = () => {
   
     const fetchContacts = async () => {
       try {
-        const res = await fetch(`http://localhost:8081/v1/contacts/${userId}`);
+        const res = await fetch(`${API_BASE_URL}/v1/contacts/${userId}`);
         if (!res.ok) throw new Error("Failed to fetch contacts");
         const data = await res.json();
 		console.log(data);
 
         const emergency = data.filter((c) => c.contactType === "EMERGENCY");
         const family = data.filter((c) => c.contactType === "FAMILY");
+		const self = data.filter((c) => c.contactType === "SELF");
 
         setEmergencyContacts(emergency);
-        setHelpContacts(family);
+        setFamilyContacts(family);
+		setSelfContacts(self);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,14 +46,15 @@ const HomePage = () => {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:8081/v1/contacts/${contactId}`, {
+      const res = await fetch(`${API_BASE_URL}/v1/contacts/${contactId}`, {
         method: "DELETE"
       });
       if (!res.ok) throw new Error("Failed to delete contact");
 
       // Remove from local state
       setEmergencyContacts((prev) => prev.filter((c) => c.id !== contactId));
-      setHelpContacts((prev) => prev.filter((c) => c.id !== contactId));
+      setFamilyContacts((prev) => prev.filter((c) => c.id !== contactId));
+	  setSelfContacts((prev) => prev.filter((c) => c.id !== contactId));
 	  
 	      // Show toast
 		const toastEl = document.getElementById("deleteToast");
@@ -105,7 +112,7 @@ const HomePage = () => {
 		  }}
 		  data-bs-toggle="modal"
 		  data-bs-target="#addContactModal"
-		  onClick={() => navigate("/add-contact")}
+		  onClick={() => navigate("/add-contact", { state: { userId, mobileNumber } })}
 		  title="Add Contact"
 		>
 		  <i className="bi bi-plus-lg fs-4"></i>
@@ -132,12 +139,23 @@ const HomePage = () => {
             {/* Family Contacts */}
             <section>
               <h4 className="text-muted">Family</h4>
-              {helpContacts.length === 0 ? (
+              {familyContacts.length === 0 ? (
                 <p className="text-muted">No family contacts found.</p>
               ) : (
-                helpContacts.map(renderContactCard)
+                familyContacts.map(renderContactCard)
               )}
             </section>
+			
+			{/* Self Contacts */}
+			<section className="mt-4">
+			  <h4 className="text-muted">Self</h4>
+			  {selfContacts.length === 0 ? (
+				<p className="text-muted">No self contacts found.</p>
+			  ) : (
+				selfContacts.map(renderContactCard)
+			  )}
+			</section>
+
           </>
         )}
       </main>

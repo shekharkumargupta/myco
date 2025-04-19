@@ -1,6 +1,7 @@
 package com.myco.users.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,7 +17,9 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid mobile number")
     private String mobileNumber;
+    private boolean isVerified;
     @CreatedDate
     private long createdAt;
     @LastModifiedDate

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "./config";
+
 
 const SignUpPage = () => {
   const [mobile, setMobile] = useState("");
@@ -9,40 +11,44 @@ const SignUpPage = () => {
   
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+	const handleSubmit = async (e) => {
+	  e.preventDefault();
 
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(mobile)) {
-      setError("Please enter a valid 10-digit mobile number.");
-      return;
-    }
+	  const phoneRegex = /^[0-9]{10}$/;
+	  if (!phoneRegex.test(mobile)) {
+		setError("Please enter a valid 10-digit mobile number.");
+		return;
+	  }
 
-    setError("");
-    setLoading(true);
+	  setError("");
+	  setLoading(true);
 
-    try {
-      const response = await fetch("http://localhost:8081/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ mobile })
-      });
+	  try {
+		const response = await fetch(`${API_BASE_URL}/v1/users`, {
+		  method: "POST",
+		  headers: {
+			"Content-Type": "application/json"
+		  },
+		  body: JSON.stringify({ mobileNumber: mobile })
+		});
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || "Something went wrong!");
-      }
+		if (!response.ok) {
+		  const data = await response.json();
+		  throw new Error(data.message || "Something went wrong!");
+		}
 
-      //setSubmitted(true);
-	  navigate("/otp", { state: { mobile } });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+		const data = await response.json();
+		const userId = data.id; // 👈 Make sure the backend returns this
+
+		// ✅ Redirect with ID
+		navigate("/otp", { state: { userId, mobile } });
+
+	  } catch (err) {
+		setError(err.message);
+	  } finally {
+		setLoading(false);
+	  }
+	};
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100 bg-light">

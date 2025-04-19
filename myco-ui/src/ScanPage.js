@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import API_BASE_URL from "./config";
 
 const ScanPage = () => {
   const location = useLocation();
@@ -67,7 +68,7 @@ const ScanPage = () => {
   const sendOtpToMobile = async () => {
     setIsSendingOtp(true);
     try {
-      const response = await fetch('http://localhost:8081/v1/otp/send', {
+      const response = await fetch('${API_BASE_URL}/v1/otp/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mobileNumber }),
@@ -97,7 +98,7 @@ const verifyOtpWithApi = async () => {
 
   setIsVerifying(true);
   try {
-    const response = await fetch('http://localhost:8081/v1/otp', {
+    const response = await fetch('${API_BASE_URL}/v1/otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mobileNumber, otp: otpCode }),
@@ -127,7 +128,7 @@ const verifyOtpWithApi = async () => {
 
 const makeCallToOwner = async () => {
   try {
-    const response = await fetch('http://localhost:8081/v1/otp/makeCall', {
+    const response = await fetch('${API_BASE_URL}/v1/otp/makeCall', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -173,7 +174,7 @@ const uploadCapturedImage = async () => {
     const formData = new FormData();
     formData.append('file', imageBlob, 'captured-photo.jpg');
 
-    const response = await fetch('http://localhost:8081/v1/files/upload', {
+    const response = await fetch('${API_BASE_URL}/v1/files/upload', {
       method: 'POST',
       body: formData,
     });

@@ -1,10 +1,8 @@
 package com.myco.users.controllers;
 
-import com.myco.users.domain.AppUser;
 import com.myco.users.domain.OTP;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,7 +24,7 @@ public class OTPController {
 		return ResponseEntity.ok("1111");
     }
 	
-		@PostMapping("/makeCall")
+	@PostMapping("/makeCall")
     public ResponseEntity<String> makeCall(@RequestBody OTP otp){
 		return ResponseEntity.ok("1111");
     }

@@ -1,26 +1,32 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import API_BASE_URL from "./config";
 
 const AddContactPage = () => {
   const [contactName, setContactName] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [contactType, setContactType] = useState("");
 
+  const location = useLocation();
   const navigate = useNavigate();
+  
+  const { userId, mobileNumber } = location.state || {};
+
+  console.log(userId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newContact = {
-      name: contactName,
-      contactNumber,
-      type: contactType,
-      userId: "your-user-id" // Replace this with real userId logic
+      contactName: contactName,
+      contactNumber: contactNumber,
+      contactType: contactType,
+      appUser: {id: userId} // Replace this with real userId logic
     };
 
     try {
-      const res = await fetch("http://localhost:8081/v1/contacts", {
+      const res = await fetch(`${API_BASE_URL}/v1/contacts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newContact)
@@ -29,7 +35,7 @@ const AddContactPage = () => {
       if (!res.ok) throw new Error("Failed to add contact");
 
       alert("Contact added successfully!");
-      navigate("/home");
+      navigate("/home", { state: { userId, mobileNumber } });
     } catch (err) {
       alert("Error: " + err.message);
     }
@@ -85,8 +91,9 @@ const AddContactPage = () => {
             required
           >
             <option value="">Select Type</option>
-            <option value="Emergency">Emergency</option>
-            <option value="Help">Help</option>
+            <option value="EMERGENCY">Emergency</option>
+			<option value="FAMILY">Family</option>
+			<option value="SELF">SELF</option>
           </select>
         </div>
 

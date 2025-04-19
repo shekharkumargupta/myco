@@ -4,8 +4,6 @@ import API_BASE_URL from "./config";
 
 const HomePage = () => {
   const [emergencyContacts, setEmergencyContacts] = useState([]);
-  const [familyContacts, setFamilyContacts] = useState([]);
-  const [selfContacts, setSelfContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const location = useLocation();
@@ -25,14 +23,8 @@ const HomePage = () => {
         if (!res.ok) throw new Error("Failed to fetch contacts");
         const data = await res.json();
 		console.log(data);
-
-        const emergency = data.filter((c) => c.contactType === "EMERGENCY");
-        const family = data.filter((c) => c.contactType === "FAMILY");
-		const self = data.filter((c) => c.contactType === "SELF");
-
-        setEmergencyContacts(emergency);
-        setFamilyContacts(family);
-		setSelfContacts(self);
+		
+        setEmergencyContacts(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -53,8 +45,6 @@ const HomePage = () => {
 
       // Remove from local state
       setEmergencyContacts((prev) => prev.filter((c) => c.id !== contactId));
-      setFamilyContacts((prev) => prev.filter((c) => c.id !== contactId));
-	  setSelfContacts((prev) => prev.filter((c) => c.id !== contactId));
 	  
 	      // Show toast
 		const toastEl = document.getElementById("deleteToast");
@@ -69,8 +59,9 @@ const HomePage = () => {
   const renderContactCard = (contact) => (
     <div className="card mb-2 shadow-sm" key={contact.id} style={{ borderRadius: "1rem" }}>
       <div className="card-body">
-        <h5 className="card-title mb-1">{contact.contactNumber}</h5>
-        <p className="card-text text-muted mb-0">{contact.contactName}</p>
+        <h5 className="card-title mb-1">{contact.contactName}</h5>
+        <p className="card-text text-muted mb-0">{contact.contactNumber}</p>
+		<p className="card-text text-muted mb-0">{contact.relation}</p>
 		{/* Delete icon */}
 		<button
 		  className="btn position-absolute top-0 end-0 m-2 text-muted"
@@ -128,34 +119,12 @@ const HomePage = () => {
           <>
             {/* Emergency Contacts */}
             <section className="mb-4">
-              <h4 className="text-muted">Emergency</h4>
               {emergencyContacts.length === 0 ? (
                 <p className="text-muted">No emergency contacts found.</p>
               ) : (
                 emergencyContacts.map(renderContactCard)
               )}
             </section>
-
-            {/* Family Contacts */}
-            <section>
-              <h4 className="text-muted">Family</h4>
-              {familyContacts.length === 0 ? (
-                <p className="text-muted">No family contacts found.</p>
-              ) : (
-                familyContacts.map(renderContactCard)
-              )}
-            </section>
-			
-			{/* Self Contacts */}
-			<section className="mt-4">
-			  <h4 className="text-muted">Self</h4>
-			  {selfContacts.length === 0 ? (
-				<p className="text-muted">No self contacts found.</p>
-			  ) : (
-				selfContacts.map(renderContactCard)
-			  )}
-			</section>
-
           </>
         )}
       </main>

@@ -23,9 +23,4 @@ public class OTPController {
     public ResponseEntity<String> send(@RequestBody OTP otp){
 		return ResponseEntity.ok("1111");
     }
-	
-	@PostMapping("/makeCall")
-    public ResponseEntity<String> makeCall(@RequestBody OTP otp){
-		return ResponseEntity.ok("1111");
-    }
 }

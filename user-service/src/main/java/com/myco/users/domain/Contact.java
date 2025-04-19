@@ -1,7 +1,6 @@
 package com.myco.users.domain;
 
 
-import com.myco.users.enums.ContactType;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,7 +15,7 @@ public class Contact {
     @Id
     @GeneratedValue
     private long id;
-    private ContactType contactType;
+    private String relation;
     private String contactName;
     private String contactNumber;
     @ManyToOne

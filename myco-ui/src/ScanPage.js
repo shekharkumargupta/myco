@@ -268,7 +268,6 @@ const resizeBase64Image = (base64, maxWidth = 800, maxHeight = 800) => {
             </div>
           )}
           <div className="d-grid gap-3">
-            <button className="btn btn-success" onClick={handleButtonClick}>📞 Inform to Owner</button>
             <button className="btn btn-danger" onClick={handleButtonClick}>📞 Emergency Call</button>
           </div>
         </div>

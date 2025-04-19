@@ -6,23 +6,24 @@ import API_BASE_URL from "./config";
 const AddContactPage = () => {
   const [contactName, setContactName] = useState("");
   const [contactNumber, setContactNumber] = useState("");
-  const [contactType, setContactType] = useState("");
+  const [relation, setRelation] = useState("Family");
+  const [customRelation, setCustomRelation] = useState("");
 
   const location = useLocation();
   const navigate = useNavigate();
-  
-  const { userId, mobileNumber } = location.state || {};
 
-  console.log(userId);
+  const { userId, mobileNumber } = location.state || {};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const finalRelation = relation === "Others" ? customRelation : relation;
+
     const newContact = {
-      contactName: contactName,
-      contactNumber: contactNumber,
-      contactType: contactType,
-      appUser: {id: userId} // Replace this with real userId logic
+      contactName,
+      contactNumber,
+      relation: finalRelation.toUpperCase(), // assuming backend expects UPPERCASE
+      appUser: { id: userId }
     };
 
     try {
@@ -43,21 +44,19 @@ const AddContactPage = () => {
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-column">
-	
-	  <header className="bg-primary text-white py-3 shadow-sm sticky-top">
+      <header className="bg-primary text-white py-3 shadow-sm sticky-top">
         <div className="container d-flex justify-content-between align-items-center">
           <h4 className="mb-0">Add Contact</h4>
           <button
             className="btn btn-outline-light rounded-circle p-2 d-flex align-items-center justify-content-center"
             onClick={() => navigate("/home")}
-			style={{ width: "40px", height: "40px" }}
+            style={{ width: "40px", height: "40px" }}
             aria-label="Home"
           >
-			  <i className="bi bi-house-door-fill fs-4"></i>
-		  </button>
+            <i className="bi bi-house-door-fill fs-4"></i>
+          </button>
         </div>
       </header>
-
 
       <form onSubmit={handleSubmit} className="border p-4 rounded shadow-sm bg-light">
         <div className="mb-3">
@@ -83,19 +82,31 @@ const AddContactPage = () => {
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Contact Type</label>
+          <label className="form-label">Relation</label>
           <select
             className="form-select"
-            value={contactType}
-            onChange={(e) => setContactType(e.target.value)}
+            value={relation}
+            onChange={(e) => setRelation(e.target.value)}
             required
           >
-            <option value="">Select Type</option>
-            <option value="EMERGENCY">Emergency</option>
-			<option value="FAMILY">Family</option>
-			<option value="SELF">SELF</option>
+            <option value="Family">Family</option>
+            <option value="Friends">Friends</option>
+            <option value="Others">Others</option>
           </select>
         </div>
+
+        {relation === "Others" && (
+          <div className="mb-3">
+            <label className="form-label">Specify Relation</label>
+            <input
+              type="text"
+              className="form-control"
+              value={customRelation}
+              onChange={(e) => setCustomRelation(e.target.value)}
+              required
+            />
+          </div>
+        )}
 
         <div className="d-grid">
           <button type="submit" className="btn btn-primary">

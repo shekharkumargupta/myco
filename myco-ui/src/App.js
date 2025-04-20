@@ -9,6 +9,7 @@ import HomePage from './HomePage';
 import AddContactPage from "./AddContactPage";
 import QrCodePage from "./QrCodePage";
 import ScanPage from "./ScanPage";
+import ThankYouPage from "./ThankYouPage";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
 		  <Route path="/add-contact" element={<AddContactPage />} />
 		  <Route path="/qr" element={<QrCodePage />} />
 		  <Route path="/scan" element={<ScanPage />} />
+		  <Route path="/thank-you" element={<ThankYouPage />} />
 	    </Routes>
       </div>
     </Router>

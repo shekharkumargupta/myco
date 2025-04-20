@@ -8,7 +8,7 @@ import API_BASE_URL from './config';
 const ScanPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const userId = new URLSearchParams(location.search).get('userId');
+  const ownerId = new URLSearchParams(location.search).get('ownerId');
 
   const fileInputRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -20,6 +20,8 @@ const ScanPage = () => {
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [isUploaded, setIsUploaded] = useState(false);
+
 
   useEffect(() => {
     if (otpStarted && resendTimer > 0) {
@@ -29,6 +31,17 @@ const ScanPage = () => {
   }, [resendTimer, otpStarted]);
 
   const handleCapture = () => fileInputRef.current?.click();
+
+	const handleUploadClick = async () => {
+	  const success = await uploadCapturedImage();
+	  if (success) {
+		alert("✅ Image uploaded successfully!");
+		setIsUploaded(true);
+	  } else {
+		alert("❌ Failed to upload image.");
+	  }
+	};
+
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -82,7 +95,9 @@ const ScanPage = () => {
         body: JSON.stringify({ mobileNumber, otp: code }),
       });
       if (res.ok) {
-        await makeCallToOwner();
+		const data = await res.json();
+		console.log(`UserId: ${data.id}`);
+        await makeCallToOwner(data.id);
         setShowModal(false);
       } else {
         alert('❌ Invalid OTP');
@@ -96,17 +111,18 @@ const ScanPage = () => {
     }
   };
 
-  const makeCallToOwner = async () => {
+  const makeCallToOwner = async (userId) => {
     try {
       const res = await fetch(`${API_BASE_URL}/v1/call`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, mobileNumber, capturedImage }),
+        body: JSON.stringify({ userId: ownerId, mobileNumber, capturedImage }),
       });
       if (res.ok && (await uploadCapturedImage())) {
+		  const data = await res.json();
         setShowSuccessDialog(true);
         //setTimeout(() => (window.location.href = '/home'), 3000);
-		navigate("/home", { state: { userId, mobileNumber } });
+		navigate("/thank-you", { state: { userId, mobileNumber } });
       } else {
         const data = await res.json();
         alert(`❌ ${data.message}`);
@@ -139,16 +155,27 @@ const ScanPage = () => {
 
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
         <div className="card shadow p-4" style={{ maxWidth: '400px', width: '100%' }}>
-          <h6 className="text-success text-center mb-4">Your Mobile Number: {mobileNumber}</h6>
+          <h6 className="text-success text-center mb-4">Capture Photo</h6>
           {capturedImage && (
             <div className="mb-3 text-center">
               <img src={capturedImage} alt="Captured" className="img-fluid rounded" />
             </div>
           )}
           <div className="d-grid gap-3">
-            <button className="btn btn-danger" onClick={handleButtonClick}>
-              📞 Emergency Call
-            </button>
+		  
+			  {capturedImage && !isUploaded && (
+				  <button className="btn btn-primary" onClick={handleUploadClick}>
+					⬆️ Upload Photo
+				  </button>
+				)}
+
+
+		  
+            {isUploaded && (
+				<button className="btn btn-danger" onClick={handleButtonClick}>
+				  📞 Emergency Call
+				</button>
+			  )}
           </div>
         </div>
       </div>

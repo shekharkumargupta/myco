@@ -20,15 +20,16 @@ public class OTPController {
 		this.appUserService = appUserService;
 	}
 
+	@PostMapping("/send")
+	public ResponseEntity<String> send(@RequestBody String mobileNumber){
+		String generated = otpService.generate(mobileNumber);
+		return ResponseEntity.ok(generated);
+	}
+
 	@PostMapping("/verify")
     public ResponseEntity<AppUser> verify(@RequestBody OTP otp){
 		AppUser appUser = otpService.verify(otp);
 		return ResponseEntity.ok().body(appUser);
     }
-	
-	@PostMapping("/send")
-    public ResponseEntity<String> send(@RequestBody String mobileNumber){
-		String generated = otpService.generate(mobileNumber);
-		return ResponseEntity.ok(generated);
-    }
+
 }

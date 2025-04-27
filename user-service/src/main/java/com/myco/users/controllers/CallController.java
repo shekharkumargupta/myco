@@ -22,8 +22,8 @@ public class CallController {
 
     @PostMapping
     public ResponseEntity<List<CallResponse>> makeCall(@RequestBody CallRequest callRequest){
-        //List<CallResponse> callResponses = callService.call(callRequest);
-        List<CallResponse> callResponses = new ArrayList<>();
+        List<CallResponse> callResponses = callService.call(callRequest);
+        //List<CallResponse> callResponses = new ArrayList<>();
         return ResponseEntity.ok(callResponses);
     }
 }

@@ -47,7 +47,7 @@ const OtpPage = () => {
     const fullOtp = otp.join("");
 
     try {
-      const response = await fetch("http://localhost:8081/v1/otp", {
+      const response = await fetch("http://localhost:8081/v1/otp/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

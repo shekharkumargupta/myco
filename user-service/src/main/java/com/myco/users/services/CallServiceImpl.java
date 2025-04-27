@@ -1,8 +1,7 @@
 package com.myco.users.services;
 
-import com.myco.users.domain.CallRequest;
-import com.myco.users.domain.CallResponse;
-import com.myco.users.domain.Contact;
+import com.myco.users.domain.*;
+import com.myco.users.utils.MessageUtil;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Call;
 import com.twilio.type.PhoneNumber;
@@ -22,27 +21,38 @@ public class CallServiceImpl implements CallService{
     private static final String ACCOUNT_SID = System.getenv("TWILIO_ACCOUNT_SID");
     private static final String AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
     private static final String TWILIO_CALL_URL = "https://twimlets.com/message?Message%5B0%5D=";
-    private String fromPhoneNumber = "+17177947344";
+    private String fromPhoneNumber = "";
+    private String toPhoneNumber = "";
 
     private final ContactService contactService;
-
-    public CallServiceImpl(ContactService contactService) {
+    private final AppUserService appUserService;
+    private final MessageUtil messageUtil;
+    public CallServiceImpl(ContactService contactService, AppUserService appUserService, MessageUtil messageUtil) {
         this.contactService = contactService;
+        this.appUserService = appUserService;
+        this.messageUtil = messageUtil;
     }
 
 
     @Override
     public List<CallResponse> call(CallRequest callRequest) {
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-        List<Contact> contacts = contactService.findAllByUserId(callRequest.getToUserId());
         List<CallResponse> callResponses = new ArrayList<>();
+        List<Contact> contacts = contactService.findAllByUserId(callRequest.getToUserId());
+        AppUser owner = appUserService.find(callRequest.getToUserId());
+        AppUser caller = appUserService.find(callRequest.getFromUserId());
 
         for (Contact contact : contacts) {
-            String message = createCallMessage();
+            callRequest.setCaller(caller);
+            callRequest.setOwner(owner);
+            callRequest.setContact(contact);
+
+            String message = createCallMessages(callRequest);
+            System.out.println("Message: " + message);
             String encodedMessage = URLEncoder.encode(message, StandardCharsets.UTF_8);
             String twimlUrl = TWILIO_CALL_URL + encodedMessage;
             Call call = Call.creator(
-                    new PhoneNumber(contact.getContactNumber()), // To number
+                    new PhoneNumber(toPhoneNumber), // To number
                     new PhoneNumber(fromPhoneNumber), // From your Twilio number
                     URI.create(twimlUrl)
             ).create();
@@ -61,13 +71,15 @@ public class CallServiceImpl implements CallService{
         return callResponse;
     }
 
-    private String createCallMessage(){
-        String twiml = "<Response>" +
-                "<Say language=\"hi-IN\" voice=\"Google.hi-IN-Standard-A\">" +
-                "नमस्ते! Samriddhi यह एक परीक्षण कॉल है।" +
-                "</Say>" +
-                "</Response>";
-        return twiml;
+    private String createCallMessages(CallRequest callRequest){
+        MessageParameter messageParameter = new MessageParameter(
+                "IN",
+                "pa-IN",
+                callRequest.getContact().getContactName(),
+                callRequest.getOwner().getMobileNumber(),
+                callRequest.getCaller().getMobileNumber()
+        );
+        String message = messageUtil.prepareMessage(messageParameter);
+        return message;
     }
-
 }

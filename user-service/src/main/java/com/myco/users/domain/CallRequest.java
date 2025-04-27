@@ -15,4 +15,7 @@ public class CallRequest {
     private String latitude;
     private String longitude;
     private LocalDateTime createdAt;
+    private Contact contact;
+    private AppUser owner;
+    private AppUser caller;
 }

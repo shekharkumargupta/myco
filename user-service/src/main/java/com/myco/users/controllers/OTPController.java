@@ -1,7 +1,7 @@
 package com.myco.users.controllers;
 
-import com.myco.users.domain.AppUser;
-import com.myco.users.domain.OTP;
+import com.myco.users.entities.AppUser;
+import com.myco.users.entities.OTP;
 import com.myco.users.services.AppUserService;
 import com.myco.users.services.OTPService;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,5 @@
 package com.myco.users.controllers;
 
-import com.myco.users.domain.AppUser;
 import com.myco.users.services.AppUserService;
 import com.myco.users.services.QRCodeGeneratorServiceImpl;
 import lombok.extern.slf4j.Slf4j;

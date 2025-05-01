@@ -1,4 +1,4 @@
-package com.myco.users.domain;
+package com.myco.users.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;

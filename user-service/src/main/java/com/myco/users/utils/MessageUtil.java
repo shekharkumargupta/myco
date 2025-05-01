@@ -1,7 +1,8 @@
 package com.myco.users.utils;
 
-import com.myco.users.domain.Message;
-import com.myco.users.domain.MessageParameter;
+
+import com.myco.users.dtos.Message;
+import com.myco.users.dtos.MessageParameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

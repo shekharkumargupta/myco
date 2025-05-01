@@ -1,12 +1,12 @@
 package com.myco.users.controllers;
 
-import com.myco.users.domain.CallRequest;
-import com.myco.users.domain.CallResponse;
+
+import com.myco.users.dtos.CallRequest;
+import com.myco.users.dtos.CallResponse;
 import com.myco.users.services.CallService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "*")

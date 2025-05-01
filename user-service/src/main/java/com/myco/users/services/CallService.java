@@ -1,7 +1,8 @@
 package com.myco.users.services;
 
-import com.myco.users.domain.CallRequest;
-import com.myco.users.domain.CallResponse;
+
+import com.myco.users.dtos.CallRequest;
+import com.myco.users.dtos.CallResponse;
 
 import java.util.List;
 

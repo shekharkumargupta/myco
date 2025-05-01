@@ -1,6 +1,6 @@
 package com.myco.users.repositories;
 
-import com.myco.users.domain.AppUser;
+import com.myco.users.entities.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

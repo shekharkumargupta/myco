@@ -1,7 +1,7 @@
 package com.myco.users.services;
 
-import com.myco.users.domain.AppUser;
-import com.myco.users.domain.Contact;
+import com.myco.users.entities.AppUser;
+import com.myco.users.entities.Contact;
 import com.myco.users.exceptions.ApplicationException;
 import com.myco.users.repositories.AppUserRepository;
 import com.myco.users.repositories.ContactRepository;

@@ -1,6 +1,6 @@
 package com.myco.users.controllers;
 
-import com.myco.users.domain.Contact;
+import com.myco.users.entities.Contact;
 import com.myco.users.services.AppUserService;
 import com.myco.users.services.ContactService;
 import org.springframework.http.HttpStatus;

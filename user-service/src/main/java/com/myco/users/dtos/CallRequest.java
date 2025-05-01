@@ -1,5 +1,7 @@
-package com.myco.users.domain;
+package com.myco.users.dtos;
 
+import com.myco.users.entities.AppUser;
+import com.myco.users.entities.Contact;
 import lombok.Data;
 
 import java.time.LocalDateTime;

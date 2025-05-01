@@ -1,6 +1,9 @@
 package com.myco.users.services;
 
-import com.myco.users.domain.*;
+import com.myco.users.dtos.CallRequest;
+import com.myco.users.dtos.CallResponse;
+import com.myco.users.dtos.MessageParameter;
+import com.myco.users.entities.*;
 import com.myco.users.utils.MessageUtil;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Call;

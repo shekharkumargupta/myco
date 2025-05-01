@@ -1,43 +1,52 @@
 package com.myco.users.controllers;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.myco.users.services.FileUploadService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
+import java.util.concurrent.CompletableFuture;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("v1/files")
 public class FileUploadController {
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+    @Autowired
+    @Qualifier("asyncFileUploadService")
+    private FileUploadService asyncFileUploadService;
+
+    @Autowired
+    @Qualifier("fileUploadService")
+    private FileUploadService fileUploadService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userId") String userId,
+            @RequestParam("postId") Long postId) {
         try {
-            // Create directory if it doesn't exist
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            // Normalize file name
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-
-            // Save file to the target location
-            Path targetLocation = uploadPath.resolve(fileName);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            return ResponseEntity.ok("File uploaded successfully: " + fileName);
-
-        } catch (IOException ex) {
-            return ResponseEntity.status(500).body("Could not upload the file: " + ex.getMessage());
+            String result = fileUploadService.uploadFile(file, userId, postId).get();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Could not upload the file: " + e.getMessage());
         }
     }
+
+    @PostMapping("/uploadAsync")
+    public ResponseEntity<String> uploadFileAsync(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("userId") String userId,
+            @RequestParam("postId") Long postId) {
+        try {
+            CompletableFuture<String> future = asyncFileUploadService.uploadFile(file, userId, postId);
+            String result = future.get(); // or return future directly if using WebAsyncTask
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Async upload failed: " + e.getMessage());
+        }
+    }
+
 }

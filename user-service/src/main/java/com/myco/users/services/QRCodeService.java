@@ -1,6 +1,6 @@
 package com.myco.users.services;
 
-import com.myco.users.domain.QRCode;
+import com.myco.users.entities.QRCode;
 import com.myco.users.exceptions.ApplicationException;
 
 public interface QRCodeService {

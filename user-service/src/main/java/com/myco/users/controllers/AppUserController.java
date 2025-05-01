@@ -1,6 +1,6 @@
 package com.myco.users.controllers;
 
-import com.myco.users.domain.AppUser;
+import com.myco.users.entities.AppUser;
 import com.myco.users.services.AppUserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

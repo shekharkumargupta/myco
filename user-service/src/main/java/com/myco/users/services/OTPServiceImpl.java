@@ -1,7 +1,7 @@
 package com.myco.users.services;
 
-import com.myco.users.domain.AppUser;
-import com.myco.users.domain.OTP;
+import com.myco.users.entities.AppUser;
+import com.myco.users.entities.OTP;
 import com.myco.users.exceptions.InvalidOTPException;
 import com.myco.users.repositories.AppUserRepository;
 import org.springframework.stereotype.Service;

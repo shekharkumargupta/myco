@@ -23,8 +23,6 @@ spring:
 
 file:
   upload-dir: uploads/
-  
-
 
 qr:
   searchUrl: http://localhost:8081/

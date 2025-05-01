@@ -1,4 +1,4 @@
-package com.myco.users.domain;
+package com.myco.users.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

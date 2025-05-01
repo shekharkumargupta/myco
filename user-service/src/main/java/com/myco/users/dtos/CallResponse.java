@@ -1,9 +1,8 @@
-package com.myco.users.domain;
+package com.myco.users.dtos;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 public class CallResponse {

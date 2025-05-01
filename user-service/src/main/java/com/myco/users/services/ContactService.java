@@ -1,8 +1,7 @@
 package com.myco.users.services;
 
-import com.myco.users.domain.Contact;
+import com.myco.users.entities.Contact;
 import com.myco.users.exceptions.ApplicationException;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

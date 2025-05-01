@@ -1,25 +1,25 @@
-package com.myco.users.domain;
-
+package com.myco.users.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.UUID;
+
 @Data
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Contact {
+public class AppUser {
 
     @Id
-    @GeneratedValue
-    private long id;
-    private String relation;
-    private String contactName;
-    private String contactNumber;
-    @ManyToOne
-    private AppUser appUser;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid mobile number")
+    private String mobileNumber;
+    private boolean isVerified;
     @CreatedDate
     private long createdAt;
     @LastModifiedDate

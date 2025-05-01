@@ -6,6 +6,7 @@ import com.myco.users.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,6 +33,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<Post> getPostsByPostedFor(String postedFor) {
         return postRepository.findByPostedFor(postedFor);
+    }
+
+    @Override
+    public List<Post> getPostsBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
+        return postRepository.findByCreatedAtBetween(startDate, endDate);
     }
 
 }

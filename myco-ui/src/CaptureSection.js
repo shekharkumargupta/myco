@@ -9,6 +9,7 @@ const CaptureSection = ({ handleCapture, fileInputRef, handleImageChange }) => (
       type="file"
       accept="image/*"
       capture="environment"
+	  multiple
       ref={fileInputRef}
       onChange={handleImageChange}
       style={{ display: 'none' }}

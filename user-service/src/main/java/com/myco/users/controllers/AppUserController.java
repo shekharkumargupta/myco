@@ -1,5 +1,6 @@
 package com.myco.users.controllers;
 
+import com.myco.users.dtos.LoginRequest;
 import com.myco.users.entities.AppUser;
 import com.myco.users.services.AppUserService;
 import jakarta.validation.Valid;
@@ -27,6 +28,12 @@ public class AppUserController {
     @GetMapping("/{mobileNumber}")
     public AppUser findByMobileNumber(String mobileNumber){
         AppUser appUser = appUserService.findByMobileNumber(mobileNumber);
+        return appUser;
+    }
+
+    @PostMapping("/verified")
+    public AppUser verified(@RequestBody LoginRequest loginRequest){
+        AppUser appUser = appUserService.findByMobileNumber(loginRequest.getMobileNumber());
         return appUser;
     }
 

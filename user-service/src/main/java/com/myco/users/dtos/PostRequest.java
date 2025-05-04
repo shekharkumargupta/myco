@@ -9,4 +9,6 @@ public class PostRequest {
     private String title;
     private String postedBy;
     private String postedFor;
+    private String longitude;
+    private String latitude;
 }

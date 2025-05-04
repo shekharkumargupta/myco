@@ -24,6 +24,8 @@ public class FileUploadServiceImpl implements FileUploadService {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+    @Value("${file.access-location}")
+    private String accessLocation;
 
     @Autowired
     private UploadedFileRepository uploadedFileRepository;
@@ -52,7 +54,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         UploadedFile uploadedFile = new UploadedFile(
                 userId,
                 fileName,
-                targetLocation.toString(),
+                accessLocation + fileName,
                 LocalDateTime.now(),
                 post
         );

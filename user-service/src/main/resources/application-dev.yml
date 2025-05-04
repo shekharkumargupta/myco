@@ -21,8 +21,17 @@ spring:
       max-request-size: 5MB
 
 
+
+  web:
+    resources:
+      static-locations: file:///${file.upload-dir}
+
 file:
-  upload-dir: uploads/
+  upload-dir: D:/GitProject/uploads/
+  access-location: http://localhost:${server.port}/
+
+
+
 
 qr:
   searchUrl: http://localhost:8081/

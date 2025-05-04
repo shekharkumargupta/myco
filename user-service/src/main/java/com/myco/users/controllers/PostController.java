@@ -1,8 +1,10 @@
 package com.myco.users.controllers;
 
 import com.myco.users.dtos.PostRequest;
+import com.myco.users.dtos.UploadedFileDto;
 import com.myco.users.entities.Post;
 import com.myco.users.services.PostService;
+import com.myco.users.services.UploadedFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,16 +22,23 @@ public class PostController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private UploadedFileService uploadedFileService;
+
     @PostMapping
     public ResponseEntity<Post> createPost(@RequestParam("file") MultipartFile file,
                                            @RequestParam("title") String title,
                                            @RequestParam("postedBy") String postedBy,
-                                           @RequestParam("postedFor") String postedFor) {
+                                           @RequestParam("postedFor") String postedFor,
+                                           @RequestParam("latitude") String latitude,
+                                           @RequestParam("longitude") String longitude) {
         PostRequest postRequest = new PostRequest();
         postRequest.setFile(file);
         postRequest.setTitle(title);
         postRequest.setPostedBy(postedBy);
         postRequest.setPostedFor(postedFor);
+        postRequest.setLatitude(latitude);
+        postRequest.setLongitude(longitude);
         Post createdPost = postService.createPost(postRequest);
         String name = postRequest.getFile().getName();
         log.info("FileName: {}", name);
@@ -46,5 +55,11 @@ public class PostController {
     public ResponseEntity<List<Post>> getPostsForUser(@PathVariable String postedFor) {
         List<Post> posts = postService.getPostsByPostedFor(postedFor);
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/{postId}/files")
+    public ResponseEntity<List<UploadedFileDto>> getUploadedFilesForPost(@PathVariable Long postId) {
+        List<UploadedFileDto> files = uploadedFileService.getFilesByPostId(postId);
+        return ResponseEntity.ok(files);
     }
 }

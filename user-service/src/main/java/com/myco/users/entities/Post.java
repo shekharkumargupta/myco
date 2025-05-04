@@ -22,7 +22,9 @@ public class Post {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UploadedFile> uploadedFiles = new ArrayList<>();
+    private String longitude;
+    private String latitude;
+//
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<UploadedFile> uploadedFiles = new ArrayList<>();
 }

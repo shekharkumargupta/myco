@@ -19,6 +19,7 @@ public class AppUser {
     private UUID id;
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid mobile number")
     private String mobileNumber;
+    private String name;
     private boolean isVerified;
     @CreatedDate
     private long createdAt;

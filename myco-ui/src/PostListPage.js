@@ -102,11 +102,16 @@ const PostListPage = () => {
       {loading && <p className="text-center mt-4">Loading posts...</p>}
       {error && <p className="text-danger text-center mt-4">{error}</p>}
 
-      <div className="container py-4 col-12 col-md-6 mb-4">
+      <div className="container py-4">
         <div className="row">
           {posts.map((post) => (
               <div key={post.id} className="col-12 col-md-6 mb-4">
               <div className="card w-100 shadow-sm">
+			  {/* Post Title Section */}
+				<div className="card-body border-bottom">
+					<h5 className="card-title mb-1">{post.title}</h5>
+					<p className="card-text text-muted mb-2">{post.description}</p>
+				</div>
                 {/* Images */}
                 <div className="position-relative">
                   {post.images && post.images.length > 0 ? (
@@ -182,10 +187,6 @@ const PostListPage = () => {
                       </div>
                     </div>
                   )}
-
-                  {/* Post Info */}
-                  <h5>{post.title}</h5>
-                  <p>{post.description}</p>
                 </div>
               </div>
             </div>

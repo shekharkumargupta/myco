@@ -26,6 +26,15 @@ const ScanPage = () => {
 	const [step, setStep] = useState('mobile');
 	const [coordinates, setCoordinates] = useState({ latitude: null, longitude: null });
 
+	// ⬇️ Check sessionStorage for userId on load
+	useEffect(() => {
+		const storedUserId = sessionStorage.getItem("userId");
+		if (storedUserId) {
+			setUserId(storedUserId);
+			setStep("capture");
+		}
+	}, []);
+
 	useEffect(() => {
 		if (otpStarted && resendTimer > 0) {
 			const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
@@ -33,7 +42,6 @@ const ScanPage = () => {
 		}
 	}, [resendTimer, otpStarted]);
 
-	// Get current location once
 	useEffect(() => {
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
@@ -69,14 +77,14 @@ const ScanPage = () => {
 
 			if (res.ok && data.verified) {
 				setUserId(data.id);
+				sessionStorage.setItem("userId", data.id); // ✅ Store in session
 				setOtpStarted(false);
+				setStep("capture");
 			} else {
 				await sendOtpToMobile();
+				setStep('otp');
+				setShowModal(true);
 			}
-
-			setStep('otp');
-			setShowModal(true);
-
 		} catch {
 			alert('Error verifying user.');
 		}
@@ -161,6 +169,7 @@ const ScanPage = () => {
 			if (res.ok) {
 				const data = await res.json();
 				setUserId(data.id);
+				sessionStorage.setItem("userId", data.id); // ✅ Store in session
 				setStep('capture');
 				setShowModal(false);
 			} else {
@@ -175,7 +184,7 @@ const ScanPage = () => {
 		}
 	};
 
-	const makeCallToOwner = async (userId) => {
+	const makeCallToOwner = async () => {
 		try {
 			const res = await fetch(`${API_BASE_URL}/v1/call`, {
 				method: 'POST',
@@ -207,7 +216,6 @@ const ScanPage = () => {
 			formData.append('postedBy', userId);
 			formData.append('postedFor', ownerId);
 
-			// Attach coordinates
 			if (coordinates.latitude && coordinates.longitude) {
 				formData.append('latitude', coordinates.latitude);
 				formData.append('longitude', coordinates.longitude);

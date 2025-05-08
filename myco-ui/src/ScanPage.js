@@ -69,7 +69,7 @@ const ScanPage = () => {
 			const res = await fetch(`${API_BASE_URL}/v1/users/verified`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ mobileNumber }),
+				body: JSON.stringify({ mobileNumber: mobileNumber }),
 			});
 
 			const data = await res.json();

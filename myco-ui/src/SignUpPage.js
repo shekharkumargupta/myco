@@ -8,10 +8,10 @@ const SignUpPage = () => {
   const [step, setStep] = useState(1);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState("signup"); // 👈 "signup" or "login"
 
   const navigate = useNavigate();
 
-  // ✅ Redirect if userId exists in sessionStorage
   useEffect(() => {
     const existingUserId = sessionStorage.getItem("userId");
     if (existingUserId) {
@@ -42,26 +42,41 @@ const SignUpPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: username, mobileNumber: mobile }),
-      });
+      if (mode === "signup") {
+        const response = await fetch(`${API_BASE_URL}/v1/users`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: username, mobileNumber: mobile }),
+        });
 
-      if (!response.ok) {
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || "Something went wrong!");
+        }
+
         const data = await response.json();
-        throw new Error(data.message || "Something went wrong!");
+        const userId = data.id;
+        sessionStorage.setItem("userId", userId);
+		console.log("mobile on signup page: " + mobile);
+        navigate("/otp", { state: { userId, mobileNumber: mobile } });
+
+      } else if (mode === "login") {
+        const response = await fetch(`${API_BASE_URL}/v1/users/verified`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ mobileNumber: mobile }),
+        });
+
+        const data = await response.json();
+		console.log(data);
+
+        if (!response.ok || !data.verified) {
+          throw new Error(data.message || "Mobile number not found.");
+        }
+
+        sessionStorage.setItem("userId", data.id);
+        navigate("/otp", { state: { userId: data.id, mobileNumber: mobile } });
       }
-
-      const data = await response.json();
-      const userId = data.id;
-
-      // ✅ Store userId in sessionStorage
-      sessionStorage.setItem("userId", userId);
-
-      // ✅ Navigate to OTP screen
-      navigate("/otp", { state: { userId, mobile } });
-
     } catch (err) {
       setError(err.message);
     } finally {
@@ -72,9 +87,12 @@ const SignUpPage = () => {
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100 bg-light">
       <div className="card shadow-lg p-4" style={{ width: "100%", maxWidth: "400px", borderRadius: "1rem" }}>
-        <h3 className="text-center mb-4">Sign Up</h3>
+        <h3 className="text-center mb-4">
+          {mode === "signup" ? "Sign Up" : "Login"}
+        </h3>
 
-        {step === 1 && (
+        {/* 👤 Name input (Sign Up only) */}
+        {step === 1 && mode === "signup" && (
           <form onSubmit={handleUsernameSubmit}>
             <div className="mb-3">
               <label htmlFor="username" className="form-label">Name</label>
@@ -92,7 +110,8 @@ const SignUpPage = () => {
           </form>
         )}
 
-        {step === 2 && (
+        {/* 📱 Mobile number input (Step 2 for signup or step 1 for login) */}
+        {(step === 2 || mode === "login") && (
           <form onSubmit={handleMobileSubmit}>
             <div className="mb-3">
               <label htmlFor="mobile" className="form-label">Mobile Number</label>
@@ -107,10 +126,50 @@ const SignUpPage = () => {
               {error && <div className="invalid-feedback">{error}</div>}
             </div>
             <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-              {loading ? "Signing Up..." : "Sign Up"}
+              {loading
+                ? mode === "signup"
+                  ? "Signing Up..."
+                  : "Logging In..."
+                : mode === "signup"
+                ? "Sign Up"
+                : "Login"}
             </button>
           </form>
         )}
+
+        {/* 🔄 Toggle between Sign Up and Login */}
+        <div className="text-center mt-3">
+          {mode === "signup" ? (
+            <>
+              Already have an account?{" "}
+              <button
+                className="btn btn-link p-0"
+                onClick={() => {
+                  setMode("login");
+                  setStep(2);
+                  setError("");
+                }}
+              >
+                Login
+              </button>
+            </>
+          ) : (
+            <>
+              Don't have an account?{" "}
+              <button
+                className="btn btn-link p-0"
+                onClick={() => {
+                  setMode("signup");
+                  setStep(1);
+                  setUsername("");
+                  setError("");
+                }}
+              >
+                Sign Up
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

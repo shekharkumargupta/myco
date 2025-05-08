@@ -34,6 +34,8 @@ public class OTPServiceImpl implements OTPService{
         String otpInDB = "1111"; //Fetch it from DB which was store when generated.
         if(otpInDB.equalsIgnoreCase(otp.getOtp())){
             AppUser appUser = appUserRepository.findByMobileNumber(otp.getMobileNumber());
+            appUser.setVerified(true);
+            appUserRepository.save(appUser);
             return appUser;
         }else {
             throw new InvalidOTPException("Invalid OTP provided");

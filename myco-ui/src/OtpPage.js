@@ -14,6 +14,8 @@ const OtpPage = () => {
 
 
   const inputRefs = useRef([]);
+  
+  console.log("mobileNumber on Otp page: " + mobileNumber);
 
   const handleChange = (index, value) => {
     if (!/^\d?$/.test(value)) return;

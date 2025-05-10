@@ -29,60 +29,76 @@ const SignUpPage = () => {
     setStep(2);
   };
 
-  const handleMobileSubmit = async (e) => {
-    e.preventDefault();
+	const handleMobileSubmit = async (e) => {
+	  e.preventDefault();
 
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(mobile)) {
-      setError("Please enter a valid 10-digit mobile number.");
-      return;
-    }
+	  const phoneRegex = /^[0-9]{10}$/;
+	  if (!phoneRegex.test(mobile)) {
+		setError("Please enter a valid 10-digit mobile number.");
+		return;
+	  }
 
-    setError("");
-    setLoading(true);
+	  setError("");
+	  setLoading(true);
 
-    try {
-      if (mode === "signup") {
-        const response = await fetch(`${API_BASE_URL}/v1/users`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: username, mobileNumber: mobile }),
-        });
+	  try {
+		let userId;
 
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.message || "Something went wrong!");
-        }
+		if (mode === "signup") {
+		  const response = await fetch(`${API_BASE_URL}/v1/users`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ name: username, mobileNumber: mobile }),
+		  });
 
-        const data = await response.json();
-        const userId = data.id;
-        sessionStorage.setItem("userId", userId);
-		console.log("mobile on signup page: " + mobile);
-        navigate("/otp", { state: { userId, mobileNumber: mobile } });
+		  const data = await response.json();
 
-      } else if (mode === "login") {
-        const response = await fetch(`${API_BASE_URL}/v1/users/verified`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ mobileNumber: mobile }),
-        });
+		  if (!response.ok) {
+			throw new Error(data.message || "Signup failed");
+		  }
 
-        const data = await response.json();
-		console.log(data);
+		  userId = data.id;
 
-        if (!response.ok || !data.verified) {
-          throw new Error(data.message || "Mobile number not found.");
-        }
+		} else {
+		  // For login, we don't check verification; just send OTP
+		  const response = await fetch(`${API_BASE_URL}/v1/users/verified`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ mobileNumber: mobile }),
+		  });
 
-        sessionStorage.setItem("userId", data.id);
-        navigate("/otp", { state: { userId: data.id, mobileNumber: mobile } });
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+		  const data = await response.json();
+
+		  if (!response.ok || !data.id) {
+			throw new Error(data.message || "Login failed");
+		  }
+
+		  userId = data.id;
+		}
+
+		// Send OTP (in both modes)
+		const otpResponse = await fetch(`${API_BASE_URL}/v1/otp/send`, {
+		  method: "POST",
+		  headers: { "Content-Type": "application/json" },
+		  body: JSON.stringify({ mobileNumber: mobile }),
+		});
+
+		const otpData = await otpResponse.json();
+
+		if (!otpResponse.ok) {
+		  throw new Error(otpData.message || "Failed to send OTP");
+		}
+
+		sessionStorage.setItem("userId", userId);
+		navigate("/otp", { state: { userId, mobileNumber: mobile } });
+
+	  } catch (err) {
+		setError(err.message);
+	  } finally {
+		setLoading(false);
+	  }
+	};
+
 
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100 bg-light">

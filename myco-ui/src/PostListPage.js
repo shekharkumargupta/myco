@@ -14,7 +14,8 @@ const PostListPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const userId = '483fc400-3723-4a52-9239-64ada79d58ba';
+  const userId = sessionStorage.getItem("userId");
+
 
   useEffect(() => {
     fetchPosts();
@@ -166,7 +167,7 @@ const PostListPage = () => {
                         {Array.isArray(postComments[post.id]) &&
                           postComments[post.id].map((comment, index) => (
                             <li key={index} className="mb-2">
-                              <p><strong>{comment.commentedBy || "Anonymous"}</strong>: {comment.text}</p>
+                              <p><strong>{comment.userName || "Anonymous"}</strong>: {comment.text}</p>
                             </li>
                           ))}
                       </ul>

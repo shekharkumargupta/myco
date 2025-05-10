@@ -44,10 +44,10 @@ public class ContactServiceImpl implements ContactService{
     }
 
     @Override
-    public List<Contact> findAllByAppUser(String mobileNumber){
-        AppUser appuser = appUserRepository.findByMobileNumber(mobileNumber);
-        List<Contact> contactList = contactRepository.findByAppUser(appuser);
-        return contactList;
+    public List<Contact> findAllByAppUser(String mobileNumber) {
+        AppUser appUser = appUserRepository.findByMobileNumber(mobileNumber)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with mobile number: " + mobileNumber));
+        return contactRepository.findByAppUser(appUser);
     }
 
     @Override

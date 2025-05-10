@@ -2,6 +2,7 @@ package com.myco.users.services;
 
 import com.myco.users.entities.AppUser;
 import com.myco.users.exceptions.ApplicationException;
+import com.myco.users.exceptions.UserNotFoundException;
 import com.myco.users.repositories.AppUserRepository;
 import com.myco.users.repositories.QRCodeRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,13 +30,14 @@ public class AppUserServiceImpl implements AppUserService{
 
     @Override
     public AppUser save(AppUser appUser) throws ApplicationException {
-        AppUser savedAppUser =
+        Optional<AppUser> existingUserOpt =
                 appUserRepository.findByMobileNumber(appUser.getMobileNumber());
-        if(Optional.ofNullable(savedAppUser).isEmpty()) {
-            savedAppUser = appUserRepository.save(appUser);
+        if (existingUserOpt.isPresent()) {
+            return existingUserOpt.get(); // return existing user, no need to save
         }
-        return savedAppUser;
+        return appUserRepository.save(appUser); // save and return new user
     }
+
 
     @Override
     public AppUser remove(long id) throws ApplicationException {
@@ -55,8 +57,12 @@ public class AppUserServiceImpl implements AppUserService{
 
     @Override
     public AppUser findByMobileNumber(String mobileNumber) {
-        return appUserRepository.findByMobileNumber(mobileNumber);
+        return appUserRepository.findByMobileNumber(mobileNumber)
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found with mobile number: "
+                                + mobileNumber));
     }
+
 
     @Override
     public List<AppUser> findAll() {

@@ -1,7 +1,7 @@
 package com.myco.users.controllers;
 
+import com.myco.users.dtos.CommentDto;
 import com.myco.users.dtos.CommentRequest;
-import com.myco.users.entities.Comment;
 import com.myco.users.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +18,12 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Comment> addComment(@RequestBody CommentRequest request) {
+    public ResponseEntity<CommentDto> addComment(@RequestBody CommentRequest request) {
         return ResponseEntity.ok(commentService.addComment(request));
     }
 
     @GetMapping("/post/{postId}")
-    public ResponseEntity<List<Comment>> getCommentsByPost(@PathVariable Long postId) {
+    public ResponseEntity<List<CommentDto>> getCommentsByPost(@PathVariable Long postId) {
         return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
     }
 }

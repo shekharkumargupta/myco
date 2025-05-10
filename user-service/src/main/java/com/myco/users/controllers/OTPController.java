@@ -1,7 +1,8 @@
 package com.myco.users.controllers;
 
+import com.myco.users.dtos.LoginRequest;
+import com.myco.users.dtos.OTPDto;
 import com.myco.users.entities.AppUser;
-import com.myco.users.entities.OTP;
 import com.myco.users.services.AppUserService;
 import com.myco.users.services.OTPService;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +22,14 @@ public class OTPController {
 	}
 
 	@PostMapping("/send")
-	public ResponseEntity<String> send(@RequestBody String mobileNumber){
-		String generated = otpService.generate(mobileNumber);
+	public ResponseEntity<String> send(@RequestBody LoginRequest loginRequest){
+		String generated = otpService.generate(loginRequest);
 		return ResponseEntity.ok(generated);
 	}
 
 	@PostMapping("/verify")
-    public ResponseEntity<AppUser> verify(@RequestBody OTP otp){
-		AppUser appUser = otpService.verify(otp);
+    public ResponseEntity<AppUser> verify(@RequestBody OTPDto otpDto){
+		AppUser appUser = otpService.verify(otpDto);
 		return ResponseEntity.ok().body(appUser);
     }
 

@@ -4,7 +4,7 @@ import API_BASE_URL from './config';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const PostListPage = () => {
+const NotificationPage = () => {
   const [posts, setPosts] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [postComments, setPostComments] = useState({});
@@ -23,7 +23,7 @@ const PostListPage = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/v1/posts/by-user/${userId}`);
+      const res = await fetch(`${API_BASE_URL}/v1/posts/for-user/${userId}`);
       const data = await res.json();
 
       const postsWithImages = await Promise.all(data.map(async (post) => {
@@ -209,4 +209,4 @@ const PostListPage = () => {
   );
 };
 
-export default PostListPage;
+export default NotificationPage;

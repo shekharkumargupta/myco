@@ -76,6 +76,14 @@ const HomePage = () => {
         <div className="container d-flex justify-content-between align-items-center">
           <h1 className="mb-0">myco</h1>
           <div className="d-flex">
+              <button
+                  className="btn btn-outline-light rounded-circle p-2 d-flex align-items-center justify-content-center me-2"
+                  onClick={() => navigate("/np")}
+                  style={{ width: "40px", height: "40px" }}
+                  aria-label="Notifications"
+                >
+              <i className="bi bi-bell-fill"></i>
+            </button>
             <button
               className="btn btn-outline-light rounded-circle p-2 d-flex align-items-center justify-content-center me-2"
               onClick={() => navigate("/qr")}

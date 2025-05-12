@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class PostRequest {
+public class PostRequestDto {
     MultipartFile file;
     private String title;
     private String postedBy;

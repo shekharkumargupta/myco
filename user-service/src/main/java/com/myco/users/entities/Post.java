@@ -1,12 +1,13 @@
 package com.myco.users.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -24,7 +25,4 @@ public class Post {
     private LocalDateTime createdAt;
     private String longitude;
     private String latitude;
-//
-//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<UploadedFile> uploadedFiles = new ArrayList<>();
 }

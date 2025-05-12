@@ -1,8 +1,8 @@
 package com.myco.users.controllers;
 
-import com.myco.users.dtos.PostRequest;
+import com.myco.users.dtos.PostRequestDto;
+import com.myco.users.dtos.PostResponseDto;
 import com.myco.users.dtos.UploadedFileDto;
-import com.myco.users.entities.Post;
 import com.myco.users.services.PostService;
 import com.myco.users.services.UploadedFileService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,34 +26,34 @@ public class PostController {
     private UploadedFileService uploadedFileService;
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<PostResponseDto> createPost(@RequestParam("file") MultipartFile file,
                                            @RequestParam("title") String title,
                                            @RequestParam("postedBy") String postedBy,
                                            @RequestParam("postedFor") String postedFor,
                                            @RequestParam("latitude") String latitude,
                                            @RequestParam("longitude") String longitude) {
-        PostRequest postRequest = new PostRequest();
-        postRequest.setFile(file);
-        postRequest.setTitle(title);
-        postRequest.setPostedBy(postedBy);
-        postRequest.setPostedFor(postedFor);
-        postRequest.setLatitude(latitude);
-        postRequest.setLongitude(longitude);
-        Post createdPost = postService.createPost(postRequest);
-        String name = postRequest.getFile().getName();
+        PostRequestDto postRequestDto = new PostRequestDto();
+        postRequestDto.setFile(file);
+        postRequestDto.setTitle(title);
+        postRequestDto.setPostedBy(postedBy);
+        postRequestDto.setPostedFor(postedFor);
+        postRequestDto.setLatitude(latitude);
+        postRequestDto.setLongitude(longitude);
+        PostResponseDto createdPost = postService.createPost(postRequestDto);
+        String name = postRequestDto.getFile().getName();
         log.info("FileName: {}", name);
         return ResponseEntity.ok(createdPost);
     }
 
     @GetMapping("/by-user/{postedBy}")
-    public ResponseEntity<List<Post>> getPostsByUser(@PathVariable String postedBy) {
-        List<Post> posts = postService.getPostsByPostedBy(postedBy);
+    public ResponseEntity<List<PostResponseDto>> getPostsByUser(@PathVariable String postedBy) {
+        List<PostResponseDto> posts = postService.getPostsByPostedBy(postedBy);
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/for-user/{postedFor}")
-    public ResponseEntity<List<Post>> getPostsForUser(@PathVariable String postedFor) {
-        List<Post> posts = postService.getPostsByPostedFor(postedFor);
+    public ResponseEntity<List<PostResponseDto>> getPostsForUser(@PathVariable String postedFor) {
+        List<PostResponseDto> posts = postService.getPostsByPostedFor(postedFor);
         return ResponseEntity.ok(posts);
     }
 

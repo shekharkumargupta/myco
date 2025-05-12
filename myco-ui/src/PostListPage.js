@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import API_BASE_URL from './config';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 
 const PostListPage = () => {
   const [posts, setPosts] = useState([]);
@@ -13,13 +15,53 @@ const PostListPage = () => {
   const [visibleSections, setVisibleSections] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const userId = sessionStorage.getItem("userId");
 
+  const stompClientRef = useRef(null);
+  const subscribedPostIdsRef = useRef(new Set());
 
   useEffect(() => {
     fetchPosts();
+
+    return () => {
+      if (stompClientRef.current) {
+        stompClientRef.current.deactivate();
+      }
+    };
   }, []);
+
+  const connectWebSocket = (postIds) => {
+    if (stompClientRef.current) return;
+
+    const socket = new SockJS(`${API_BASE_URL}/ws`);
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      reconnectDelay: 5000,
+      onConnect: () => {
+        console.log("Connected to WebSocket");
+
+        postIds.forEach(postId => {
+          if (!subscribedPostIdsRef.current.has(postId)) {
+            stompClient.subscribe(`/topic/posts/${postId}/comments`, (message) => {
+              const comment = JSON.parse(message.body);
+              setPostComments(prev => ({
+                ...prev,
+                [postId]: [...(prev[postId] || []), comment]
+              }));
+            });
+            subscribedPostIdsRef.current.add(postId);
+          }
+        });
+      },
+      onStompError: (frame) => {
+        console.error('Broker error:', frame.headers['message'], frame.body);
+      }
+    });
+
+    stompClient.activate();
+    stompClientRef.current = stompClient;
+  };
 
   const fetchPosts = async () => {
     try {
@@ -33,6 +75,9 @@ const PostListPage = () => {
       }));
 
       setPosts(postsWithImages);
+
+      const postIds = postsWithImages.map(post => post.id);
+      connectWebSocket(postIds);
     } catch (error) {
       setError('Error fetching posts or images');
     } finally {
@@ -86,7 +131,6 @@ const PostListPage = () => {
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-column">
-      {/* Header */}
       <header className="bg-primary text-white py-3 shadow-sm w-100">
         <div className="container d-flex justify-content-between align-items-center">
           <h1 className="mb-0">myco</h1>
@@ -106,25 +150,24 @@ const PostListPage = () => {
       <div className="container py-4">
         <div className="row">
           {posts.map((post) => (
-              <div key={post.id} className="col-12 col-md-6 mb-4">
+            <div key={post.id} className="col-12 col-md-6 mb-4">
               <div className="card w-100 shadow-sm">
-			  {/* Post Title Section */}
-				<div className="card-body border-bottom">
-					<h4 className="card-title mb-1">{post.postedByName}</h4>
-					<h6 className="card-title mb-1 text-muted">
-					    {new Date(post.createdAt).toLocaleString('en-GB', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                            hour12: true
-                          })}
-					</h6>
-					<p className="card-text text-muted mb-2">{post.description}</p>
-				</div>
-                {/* Images */}
+                <div className="card-body border-bottom">
+                  <h4 className="card-title mb-1">{post.postedByName}</h4>
+                  <h6 className="card-title mb-1 text-muted">
+                    {new Date(post.createdAt).toLocaleString('en-GB', {
+                      day: '2-digit',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                      hour12: true
+                    })}
+                  </h6>
+                  <p className="card-text text-muted mb-2">{post.description}</p>
+                </div>
+
                 <div className="position-relative">
                   {post.images && post.images.length > 0 ? (
                     <img
@@ -140,7 +183,6 @@ const PostListPage = () => {
                     </div>
                   )}
 
-                  {/* Toggle Icons */}
                   <div className="position-absolute bottom-0 start-0 mb-3 ms-3">
                     <button
                       className="btn btn-light me-2"
@@ -158,7 +200,6 @@ const PostListPage = () => {
                 </div>
 
                 <div className="card-body">
-                  {/* Map Section */}
                   {visibleSections[post.id]?.map && post.latitude && post.longitude && (
                     <div style={{ height: '200px' }} className="mb-3">
                       <MapContainer center={[post.latitude, post.longitude]} zoom={13} style={{ height: '100%' }}>
@@ -170,7 +211,6 @@ const PostListPage = () => {
                     </div>
                   )}
 
-                  {/* Comments Section */}
                   {visibleSections[post.id]?.comments && (
                     <div className="mb-3">
                       <h6>Comments</h6>

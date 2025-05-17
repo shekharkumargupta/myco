@@ -4,6 +4,7 @@ package com.myco.users.controllers;
 import com.myco.users.dtos.CallRequest;
 import com.myco.users.dtos.CallResponse;
 import com.myco.users.services.CallService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,8 @@ import java.util.List;
 @RequestMapping("v1/call")
 public class CallController {
 
+    //@Qualifier("twilioCallService")
+    @Qualifier("whatsAppMessageService")
     private final CallService callService;
 
     public CallController(CallService callService) {

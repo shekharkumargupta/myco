@@ -25,6 +25,13 @@ public class PostController {
     @Autowired
     private UploadedFileService uploadedFileService;
 
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PostResponseDto> getPost(@PathVariable Long id) {
+        PostResponseDto postResponseDto = postService.findById(id);
+        return ResponseEntity.ok(postResponseDto);
+    }
+
     @PostMapping
     public ResponseEntity<PostResponseDto> createPost(@RequestParam("file") MultipartFile file,
                                            @RequestParam("title") String title,

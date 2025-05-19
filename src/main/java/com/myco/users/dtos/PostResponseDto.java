@@ -13,6 +13,6 @@ public class PostResponseDto {
     private String postedByName;
     private String postedFor;
     private LocalDateTime createdAt;
-    private String longitude;
-    private String latitude;
+    private double longitude;
+    private double latitude;
 }

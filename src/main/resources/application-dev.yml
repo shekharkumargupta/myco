@@ -30,9 +30,6 @@ file:
   upload-dir: D:/GitProject/uploads/
   access-location: http://localhost:${server.port}/
 
-
-
-
 qr:
   searchUrl: http://localhost:8081/
 

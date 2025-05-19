@@ -18,8 +18,8 @@ public class PostMapper {
         dto.setPostedBy(post.getPostedBy());
         dto.setPostedByName(appUser.getName());
         dto.setPostedFor(post.getPostedFor());
-        dto.setLatitude(post.getLatitude());
-        dto.setLongitude(post.getLongitude());
+        dto.setLatitude(Double.valueOf(post.getLatitude()));
+        dto.setLongitude(Double.valueOf(post.getLongitude()));
         dto.setCreatedAt(post.getCreatedAt());
 
         return dto;

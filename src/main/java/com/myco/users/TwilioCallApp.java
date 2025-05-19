@@ -14,7 +14,7 @@ public class TwilioCallApp {
     public static final String toPhoneNumber = "";
 
 
-    public static void main(String args[]){
+    public static void no_main(String args[]){
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
         String twiml = "<Response>" +

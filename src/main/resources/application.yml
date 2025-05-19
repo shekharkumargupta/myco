@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: user-service
+    name: myco
 
   h2:
     console:
@@ -20,4 +20,4 @@ springdoc:
 file:
   upload-dir: uploads/
 qr:
-  searchUrl: http://localhost:8081/
+  searchUrl: http://localhost:8080/
